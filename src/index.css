@@ -1,0 +1,148 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --color-background: #000000;
+  --color-surface: #18181b;
+  --color-surface-selected: #262629;
+  --color-border: #2a2a2e;
+  --color-text: #f5f5f7;
+  --color-text-secondary: #8e8e93;
+
+  --color-primary: #3c87f7;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+  --color-warning: #f2b33d;
+
+  --color-set-warmup: #d9a441;
+  --color-set-feeder: #2a9d8f;
+  --color-set-work: #4b4b50;
+  --color-set-top: #d64545;
+  --color-set-cluster: #8b6fd1;
+
+  --ease-out-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  /* Altura da barra de navegação inferior, sem contar a safe area */
+  --nav-height: 64px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  padding-top: var(--safe-top);
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+}
+
+button,
+a,
+[role='button'] {
+  touch-action: manipulation;
+}
+
+/* Evita o zoom automático do Safari ao focar em inputs (exige >=16px) */
+input,
+textarea {
+  font-size: 16px;
+}
+
+/* Remove as setinhas de número que quebram o alinhamento nas colunas de peso/reps */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+/* ---------- Motion: enter/stagger/shimmer, com suporte a prefers-reduced-motion ---------- */
+
+/*
+ * Importante: fill-mode "backwards" (e não "both"). Com "both", o último quadro
+ * (transform/filter) fica aplicado pra sempre e transforma o elemento em containing
+ * block de qualquer filho position:fixed — modais e barras fixas passam a ficar presos
+ * à página em vez da tela.
+ */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+.animate-page-enter {
+  animation: page-enter 320ms var(--ease-out-smooth) backwards;
+}
+
+.animate-row-enter {
+  animation: row-enter 260ms var(--ease-out-smooth) backwards;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-selected) 37%, var(--color-surface) 63%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
